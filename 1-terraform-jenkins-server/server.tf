@@ -15,7 +15,7 @@ resource "aws_instance" "my-server" {
   ami                         = data.aws_ami.latest-amazon-linux-image.id
   instance_type               = var.instance_type
   key_name                    = "jenkins-server-demo"
-  iam_instance_profile        = aws_iam_role.ec2_role.name
+  iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
   subnet_id                   = aws_subnet.jenkins-subnet-1.id
   vpc_security_group_ids      = [aws_default_security_group.default-sg.id]
   availability_zone           = var.availability_zone
