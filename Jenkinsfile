@@ -13,8 +13,8 @@ pipeline {
                     dir('2-terraform-eks-deployment') {
                         sh "terraform init"
                         sh "terraform validate"
-                        sh "terraform plan"
-                        sh "terraform apply -auto-approve"
+                        //sh "terraform plan"
+                        //sh "terraform apply -auto-approve"
                     }
                 }
             }
