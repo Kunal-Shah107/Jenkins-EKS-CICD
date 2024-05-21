@@ -12,9 +12,7 @@ pipeline {
                 script {
                     dir('2-terraform-eks-deployment') {
                         sh "terraform init"
-                        sh "terraform validate"
-                        //sh "terraform plan"
-                        //sh "terraform apply -auto-approve"
+                        sh "terraform apply -auto-approve"
                     }
                 }
             }
@@ -23,10 +21,11 @@ pipeline {
             steps {
                 script {
                     dir('kubernetes') {
+                        sh "aws sts get-caller-identity"
                         sh "aws eks update-kubeconfig --name my-eks-cluster"
-                        sh "kubectl create -f eks-cluster-permissions.yaml"
-                        sh "kubectl apply -f nginx-deployment.yaml"
-                        sh "kubectl apply -f nginx-service.yaml"
+                        //sh "kubectl create -f eks-cluster-permissions.yaml"
+                        //sh "kubectl apply -f nginx-deployment.yaml"
+                        //sh "kubectl apply -f nginx-service.yaml"
                     }
                 }
             }
