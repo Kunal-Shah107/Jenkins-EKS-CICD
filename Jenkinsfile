@@ -64,8 +64,7 @@ pipeline {
                 script{
                     dir('EKS/ConfigurationFiles') {
                         sh 'aws eks update-kubeconfig --name my-eks-cluster'
-                        sh 'aws sts get-caller-identity'
-                        //sh 'kubectl apply -f deployment.yaml'
+                        sh 'kubectl apply -f deployment.yaml'
                         //sh 'kubectl apply -f service.yaml'
                     }
                 }
