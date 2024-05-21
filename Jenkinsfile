@@ -24,6 +24,7 @@ pipeline {
                 script {
                     dir('kubernetes') {
                         sh "aws eks update-kubeconfig --name my-eks-cluster"
+                        sh "kubectl create -f eks-cluster-permissions.yaml"
                         sh "kubectl apply -f nginx-deployment.yaml"
                         sh "kubectl apply -f nginx-service.yaml"
                     }
