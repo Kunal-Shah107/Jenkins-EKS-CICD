@@ -51,6 +51,9 @@ pipeline {
           //  }
        // }
         stage('Creating/Destroying an EKS Cluster'){
+            when {
+                environment ignoreCase: true, name: "application", value: "nginx"
+            }
             steps{
                 script{
                     dir('EKS') {
@@ -60,6 +63,9 @@ pipeline {
             }
         }
         stage('Deploying Nginx Application') {
+            when {
+                environment ignoreCase: true, name: "application", value: "pac-man"
+            }
             steps{
                 script{
                     dir('EKS/ConfigurationFiles') {
