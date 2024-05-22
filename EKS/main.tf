@@ -1,5 +1,6 @@
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
+  version = "5.8.1"
 
   name = "jenkins-vpc"
   cidr = var.vpc_cidr
@@ -31,11 +32,19 @@ module "vpc" {
 
 module "eks" {
   source = "terraform-aws-modules/eks/aws"
+  version = "20.8.5"
 
   cluster_name    = "my-eks-cluster"
-  cluster_version = "1.24"
+  cluster_version = "1.29"
 
   cluster_endpoint_public_access = true
+  enable_cluster_creator_admin_permissions = true
+
+  cluster_addons = {
+    aws-ebs-csi-driver = {
+      service_account_role_arn = module.irsa-ebs-csi.iam_role_arn
+    }
+  }
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
@@ -46,7 +55,7 @@ module "eks" {
       max_size     = 3
       desired_size = 2
 
-      instance_type = ["t2.small"]
+      instance_type = ["t3.small"]
     }
   }
 
@@ -54,4 +63,15 @@ module "eks" {
     Environment = "dev"
     Terraform   = "true"
   }
+}
+
+module "irsa-ebs-csi" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
+  version = "5.39.0"
+
+  create_role                   = true
+  role_name                     = "AmazonEKSTFEBSCSIRole-${module.eks.cluster_name}"
+  provider_url                  = module.eks.oidc_provider
+  role_policy_arns              = [data.aws_iam_policy.ebs_csi_policy.arn]
+  oidc_fully_qualified_subjects = ["system:serviceaccount:kube-system:ebs-csi-controller-sa"]
 }

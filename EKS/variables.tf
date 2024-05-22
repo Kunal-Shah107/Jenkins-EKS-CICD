@@ -12,3 +12,9 @@ variable "public_subnets" {
   description = "Subnets CIDR"
   type        = list(string)
 }
+
+variable "region" {
+  description = "AWS region"
+  type        = string
+  default     = "us-east-1"
+}
