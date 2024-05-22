@@ -5,6 +5,10 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
         AWS_DEFAULT_REGION = "us-east-1"
     }
+  parameters {
+        choice choices: ['apply', 'destroy'], description: "Create or Destory", name: "action"
+        choice choices: ['nginx', 'pac-man'], description: "Choose which application you want to deploy", name: "application"
+    }
     stages {
         stage('Checkout SCM'){
             steps{
@@ -51,9 +55,6 @@ pipeline {
           //  }
        // }
         stage('Creating/Destroying an EKS Cluster'){
-            when {
-                environment ignoreCase: true, name: "application", value: "nginx"
-            }
             steps{
                 script{
                     dir('EKS') {
@@ -64,7 +65,7 @@ pipeline {
         }
         stage('Deploying Nginx Application') {
             when {
-                environment ignoreCase: true, name: "application", value: "pac-man"
+                environment ignoreCase: true, name: "application", value: "nginx"
             }
             steps{
                 script{
@@ -79,6 +80,9 @@ pipeline {
             }
         }
         stage('Deploying Pac-Mac Game Application') {
+            when {
+                environment ignoreCase: true, name: "application", value: "pac-man"
+            }
             steps{
                 script{
                     dir('pac-man') {
