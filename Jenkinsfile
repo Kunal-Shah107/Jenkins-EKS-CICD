@@ -65,8 +65,22 @@ pipeline {
                     dir('EKS/ConfigurationFiles') {
                         sh 'aws eks update-kubeconfig --name my-eks-cluster'
                         sh 'aws sts get-caller-identity'
+                        sh 'kubectl cluster-info'
                         sh 'kubectl apply -f deployment.yaml'
                         sh 'kubectl apply -f service.yaml'
+                    }
+                }
+            }
+        }
+        stage('Deploying Pac-Mac Game Application') {
+            steps{
+                script{
+                    dir('pac-man') {
+                        sh 'aws eks update-kubeconfig --name my-eks-cluster'
+                        sh 'aws sts get-caller-identity'
+                        sh 'kubectl cluster-info'
+                        sh 'terraform init'
+                        sh 'terraform $action --auto-approve'
                     }
                 }
             }
