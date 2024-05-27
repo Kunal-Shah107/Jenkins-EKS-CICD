@@ -67,6 +67,7 @@ module "ec2_instance" {
 
   name = "Jenkins-Server"
 
+  ami                         = data.aws_ami.example.id
   instance_type               = var.instance_type
   key_name                    = "jenkins-server-demo"
   monitoring                  = true
